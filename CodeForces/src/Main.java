@@ -4,19 +4,41 @@ import java.util.stream.IntStream;
 public class Main {
     static String ss, io[];
     static int test, N = 100010, M = 1000000007;
-    static int n, m;
+    static int n;
     static void solve() throws Exception{
-        n = ni(); m = ni();
-        int[][][] dp = new int[n+m+1][n+1][m+1];
-        dp[0][0][2] = 1;
-        for (int i = 1;i <= n+m;i++){
-            for (int j = 0;j <= min(i, n);j++){
-                for (int k = 0;k <= m-i+j;k++){
-                    if (j>0&&k%2==0) dp[i][j][k] = (dp[i][j][k]+dp[i-1][j-1][k/2])%M;
-                    if (k+1 <= m) dp[i][j][k] = (dp[i][j][k]+dp[i-1][j][k+1])%M;
-                }
+        n = ni(in.readLine());
+        int ans = 0, m = 0;
+        String s = "";
+        for (int i = 1;i <= n;i++){
+            ss = in.readLine();
+            int t = ss.length();
+            for (int j = 1;j < t-1;j++){
+                if (ss.charAt(j)=='w'&&ss.charAt(j-1)=='o'&&ss.charAt(j+1)=='o') ans++;
             }
-        }out.println(dp[n+m-1][n][1]);
+            for(int j = -1;j < n;j++) s[j] += 2;
+            if (m==0) s = ss;
+            else{
+                char s1=s.charAt(0), s2=s.charAt(m-1);
+                char t1=ss.charAt(0), t2=ss.charAt(t-1);
+                int tp = 0, f = 0, ff = 0;
+                if (s2=='o'&&t1=='w'){
+                    if (t>1&&ss.charAt(1)=='o') {tp = 1;}
+                }if (s2=='w'&&t1=='o'){
+                    if (m>1&&s.charAt(m-2)=='o') {tp = 1;}
+                }if (t2=='o'&&s1=='w'){
+                    ff = 1;
+                    if (m>1&&s.charAt(1)=='o') {tp=1;f=1;}
+                }if (t2=='w'&&s1=='o'){
+                    ff = 1;
+                    if (t>1&&ss.charAt(t-2)=='o') {tp=1;f=1;}
+                }
+                if (tp == 1) ans++;
+                if (f == 1 || ff == 1) s = ss+s;
+                else s += ss;
+            }
+            m += t;
+            out.println(ans+" "+s);
+        }
     }
     public static void main(String[] args) throws Exception {
         test = 1;
