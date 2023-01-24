@@ -4,7 +4,6 @@ import java.util.stream.IntStream;
 public class Main {
     static String ss, io[];
     static int test, N = 100010, M = 1000000007;
-    static int n;
     static void solve() throws Exception{
         n = ni(in.readLine());
         int ans = 0, m = 0;
