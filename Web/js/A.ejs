@@ -1,87 +1,36 @@
-<script>
-    function secondToDate(second) {
-        if (!second) {
-            return 0;
-        }
-        var time = new Array(0, 0, 0, 0, 0);
-        if (second >= 365 * 24 * 3600) {
-            time[0] = parseInt(second / (365 * 24 * 3600));
-            second %= 365 * 24 * 3600;
-        }
-        if (second >= 24 * 3600) {
-            time[1] = parseInt(second / (24 * 3600));
-            second %= 24 * 3600;
-        }
-        if (second >= 3600) {
-            time[2] = parseInt(second / 3600);
-            second %= 3600;
-        }
-        if (second >= 60) {
-            time[3] = parseInt(second / 60);
-            second %= 60;
-        }
-        if (second > 0) {
-            time[4] = second;
-        }
-        return time;
-    }</script><script type="text/javascript" language="javascript">
-    function setTime() {
-        var create_time = Math.round(new Date(Date.UTC(2023, 01, 01, 17, 17, 20)).getTime() / 1000);
-        var timestamp = Math.round((new Date().getTime() + 8 * 60 * 60 * 1000) / 1000);
-        currentTime = secondToDate((timestamp - create_time));
-        currentTimeHtml = currentTime[1] + ' days '
-                + currentTime[2] + ' hours ' + currentTime[3] + ' minutes '+currentTime[4]+' second';
-        document.getElementById("htmer_time").innerHTML = currentTimeHtml;
-    }    setInterval(setTime, 1000);</script>
-<div class="sidebar" :class="{ 'full-height': menuVisible }">
-  <div class="top-container" data-aos="fade-right">
-    <div class="top-header-container">
-      <a class="site-title-container" href="<%= themeConfig.domain %>">
-        <img src="<%= themeConfig.domain %>/images/avatar.png?v=<%= site.utils.now %>" class="site-logo">
-        <h1 class="site-title"><%= themeConfig.siteName %></h1>
-      </a>
-      <div class="menu-btn" @click="menuVisible = !menuVisible">
-        <div class="line"></div>
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('./_blocks/head', { siteTitle: `文章归档 | ${themeConfig.siteName}` }) %>
+    <meta name="description" content="<%= themeConfig.siteDescription %>">
+  </head>
+  <body>
+    <div id="app" class="main">
+      <%- include('./_blocks/sidebar') %>
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <% let years = []; posts.forEach((item) => { const year = item.date.substring(0, 4); if (!years.includes(year)) { years.push(year); } }); %>
+          <h2 class="archives-title">文章归档</h2>
+          <div class="archives-container">
+            <% years.forEach(function(year) { %>
+              <h2 class="year" data-aos="fade-up"><%- year %></h2>
+              <% posts.forEach(function(post) { %>
+                <%if (post.date.indexOf(year) !== -1) { %>
+                  <article class="post">
+                    <a href="<%= post.link %>">
+                      <h2 class="post-title">
+                        <%= post.title %>
+                      </h2>
+                    </a>
+                  </article>
+                <% } %>
+              <% }); %>
+            <% }); %>
+          </div>
+          <%- include('./_blocks/pagination') %>
+        </div>
       </div>
     </div>
-    <div>
-      <% menus.forEach(function(menu) { %>
-        <% if (menu.openType === 'External') { %>
-          <a href="<%= menu.link %>" class="site-nav" target="_blank">
-            <%= menu.name %>
-          </a>
-        <% } else { %>
-          <a href="<%= menu.link %>" class="site-nav">
-            <%= menu.name %>
-          </a>
-        <% } %>
-      <% }); %>
-    </div>
-  </div>
-  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
-    <div class="social-container">
-      <% ['github', 'twitter' , 'weibo' , 'zhihu' , 'facebook'].forEach((item)=> { %>
-        <% if (site.customConfig[item]) { %>
-          <a class="social-link" href="<%= site.customConfig[item] %>" target="_blank">
-            <i class="fab fa-<%= item %>"></i>
-          </a>
-          <% } %>
-            <% }) %>
-      <% ['linkedin'].forEach((item)=> { %>
-        <% if (site.customConfig[item]) { %>
-          <a class="social-link" href="<%= site.customConfig[item] %>" target="_blank">
-            <i class="cib-leetcode"></i>
-          </a>
-          <% } %>
-            <% }) %>
-    </div>
-    <div class="site-description">
-      <%- themeConfig.siteDescription %>
-    </div>
-    <div class="site-footer">
-      <%- themeConfig.footerInfo %>
-	Website has ran <span id="htmer_time" style="color: white;"></span> 
-	 | Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
-    </div>
-  </div>
-</div>
+    <%- include('./_blocks/scripts') %>
+  </body>
+</html>

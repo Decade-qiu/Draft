@@ -25,10 +25,10 @@ public class LeetCode {
         return res;
     }
     public static void main(String[] args) {
-        String[] x = {"[3,10,5,25]",
-                        "[2,3,3,3,1,5,5,0,5,3,4,2,1,2,5,1,2,0]"};
-        System.out.println(new Solution().minCost(
-                int1d(x[1]), 5
+        String[] x = {"[[0,0,0,0,0,1],[1,1,0,0,1,0],[0,0,0,0,1,1],[0,0,1,0,1,0],[0,1,1,0,0,0],[0,1,1,0,0,0]]",
+                        "[[0,0,1,1,1,1],[0,0,0,0,1,1],[1,1,0,0,0,1],[1,1,1,0,0,1],[1,1,1,0,0,1],[1,1,1,0,0,0]]"};
+        System.out.println(new Solution().minimumMoves(
+                int2d(x[1])
         ));
         System.out.println(Integer.toBinaryString(3));
         System.out.println((3L >> 32 & 1));
@@ -36,20 +36,38 @@ public class LeetCode {
 }
 
 class Solution {
-    public int minCost(int[] nums, int k) {
-        int n = nums.length;
-        int[] dp = new int[n+1];
-        Arrays.fill(dp, (int)1e9);
-        dp[0] = 0;
-        int[] cnt = new int[1010];
-        for (int i = 1;i <= n;i++){
-            for (int t = 0;t < 1010;t++) cnt[t] = 0;
-            int tp = 0;
-            for (int j = i;j >= 1;j--){
-                if (cnt[nums[j-1]]++ == 0) tp++;
-                else tp = Math.max(tp-1, 0);
-                dp[i] = Math.min(dp[j-1]+i-j+1-tp+k, dp[i]);
-            }
-        }return dp[n];
+    public int minimumMoves(int[][] g) {
+        Deque<int[]> d = new LinkedList<>();
+        Set<String> hs = new HashSet<>();
+        int n = g.length, ans = 0;
+        d.offerLast(new int[]{0, 1, 0});
+        while (!d.isEmpty()){
+            int si = d.size();
+            while (si-- > 0){
+                int[] cur = d.pollFirst();
+                String hash = cur[0]+" "+cur[1];
+                if (hs.contains(hash)) continue;
+                hs.add(hash);
+                int x=cur[0]/n,y=cur[0]%n,s=cur[1]/n,t=cur[1]%n, st = cur[2];
+                if (st == 0 && x==n-1 && y==n-2 && s==n-1 && t == n-1) return ans;
+                if (st == 0){
+                    if (t+1<n && g[s][t+1]==0){
+                        d.offerLast(new int[]{cur[1], cur[1]+1, 0});
+                    }
+                    if (x+1<n && s+1<n && g[x+1][y]==0 && g[s+1][t]==0){
+                        d.offerLast(new int[]{cur[0]+n,cur[1]+n,0});
+                        d.offerLast(new int[]{cur[0], cur[0]+n,1});
+                    }
+                }else{
+                    if (s+1<n && g[s+1][t]==0){
+                        d.offerLast(new int[]{cur[0]+n, cur[1]+n, 1});
+                    }
+                    if (y+1<n && t+1<n && g[x][y+1]==0 && g[s][t+1]==0){
+                        d.offerLast(new int[]{cur[0]+1,cur[1]+1,1});
+                        d.offerLast(new int[]{cur[0], cur[0]+1,0});
+                    }
+                }
+            }++ans;
+        }return -1;
     }
 }
