@@ -3,38 +3,39 @@ import java.util.*;
 import javax.management.Query;
 
 import java.io.*;
+import java.security.GeneralSecurityException;
 
 public class Main {
     static String ss, io[];
-    static int test, N = 100010, M = 1000000007;
-    static int n, m, a[] = new int[N];
+    static int test, N = 200010, M = 1000000007;
+    static int n, c;
+    static long a[] = new long[N], cost[][] = new long[N][2];
     static void solve() throws Exception{
-        n = ni();
+        n = ni(); c = ni();
+        Arrays.fill(a, 0);
+        for (int i = 1;i <= n;i++) cost[i] = new long[]{0, 0};
         for (int i = 1;i <= n;i++) a[i] = ni();
-        int i = 2, j = n-1;
-        while (i <= n && a[i]<=a[i-1]) ++i;
-        while (j >= 1 && a[j]<=a[j+1]) --j;
-        if (i > j){
-            out.println("YES");
-        }else{
-            int f = 0;
-            for (int k = i;k <= j && f == 0;k++){
-                if (a[k] < a[k-1]) f = 1;
-            }
-            if (f == 0){
-                if (a[j]-a[i-1] <= a[j+1]) out.println("YES");
-                else out.println("NO");
-                return;
-            }
-            for (int k = i;k <= j && f == 1;k++){
-                if (a[k] > a[k-1]) f = 0;
-            }
-            if (f == 1){
-                if (a[i]-a[j+1] <= a[i-1]) out.println("YES");
-                else out.println("NO");
-                return;
-            }out.println("NO");
+        for (int i = 1;i <= n;i++){
+            cost[i][0] = min(i+a[i], n-i+1+a[i]);
+            cost[i][1] = i;
         }
+        Arrays.sort(cost, 1, n+1, (x,y)->Long.compare(x[0], y[0]));
+        for (int i = 1;i <= n;i++) cost[i][0] += cost[i-1][0];
+        int ans = 0;
+        for (int i = 1;i <= n;i++){
+            int l = 1, r = n, dx = i;
+            long first = cost[i][1]+a[(int)cost[i][1]];
+            if (first > c) continue;
+            while (l <= r){
+                int m = l+r >> 1;
+                long cur = cost[m][0];
+                if (m < dx) cur += first;
+                else cur += first-cost[dx][0]+cost[dx-1][0];
+                if (cur <= c) l = m+1;
+                else r = m-1;
+            }
+            ans = max(ans, r<dx?r+1:r);
+        }out.println(ans);
     }
     public static void main(String[] args) throws Exception {
         // test = 1;

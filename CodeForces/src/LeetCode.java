@@ -25,10 +25,9 @@ public class LeetCode {
         return res;
     }
     public static void main(String[] args) {
-        String[] x = {"[[0,0,0,0,0,1],[1,1,0,0,1,0],[0,0,0,0,1,1],[0,0,1,0,1,0],[0,1,1,0,0,0],[0,1,1,0,0,0]]",
-                        "[[0,0,1,1,1,1],[0,0,0,0,1,1],[1,1,0,0,0,1],[1,1,1,0,0,1],[1,1,1,0,0,1],[1,1,1,0,0,0]]"};
-        System.out.println(new Solution().minimumMoves(
-                int2d(x[1])
+        String[] x = {"[1,1,2,2,2,3]"};
+        System.out.println(new Solution().dieSimulator(
+                2, int1d(x[0])
         ));
         System.out.println(Integer.toBinaryString(3));
         System.out.println((3L >> 32 & 1));
@@ -36,38 +35,28 @@ public class LeetCode {
 }
 
 class Solution {
-    public int minimumMoves(int[][] g) {
-        Deque<int[]> d = new LinkedList<>();
-        Set<String> hs = new HashSet<>();
-        int n = g.length, ans = 0;
-        d.offerLast(new int[]{0, 1, 0});
-        while (!d.isEmpty()){
-            int si = d.size();
-            while (si-- > 0){
-                int[] cur = d.pollFirst();
-                String hash = cur[0]+" "+cur[1];
-                if (hs.contains(hash)) continue;
-                hs.add(hash);
-                int x=cur[0]/n,y=cur[0]%n,s=cur[1]/n,t=cur[1]%n, st = cur[2];
-                if (st == 0 && x==n-1 && y==n-2 && s==n-1 && t == n-1) return ans;
-                if (st == 0){
-                    if (t+1<n && g[s][t+1]==0){
-                        d.offerLast(new int[]{cur[1], cur[1]+1, 0});
-                    }
-                    if (x+1<n && s+1<n && g[x+1][y]==0 && g[s+1][t]==0){
-                        d.offerLast(new int[]{cur[0]+n,cur[1]+n,0});
-                        d.offerLast(new int[]{cur[0], cur[0]+n,1});
-                    }
-                }else{
-                    if (s+1<n && g[s+1][t]==0){
-                        d.offerLast(new int[]{cur[0]+n, cur[1]+n, 1});
-                    }
-                    if (y+1<n && t+1<n && g[x][y+1]==0 && g[s][t+1]==0){
-                        d.offerLast(new int[]{cur[0]+1,cur[1]+1,1});
-                        d.offerLast(new int[]{cur[0], cur[0]+1,0});
+    public int dieSimulator(int n, int[] rollMax) {
+        int M = (int)(1e9+7), ans = 0;
+        int[][][] dp = new int[n+1][6][16];
+        for (int i = 0;i < 6;i++) dp[0][i][0] = 1;
+        for (int i = 1;i <= n;i++){
+            for (int j = 0;j < 6;j++){
+                for (int k = 2;k <= rollMax[j];k++){
+                    dp[i][j][k] = (dp[i][j][k]+dp[i-1][j][k-1])%M;
+                }
+                for (int t = 0;t < 6;t++){
+                    if (t == j) continue;
+                    for (int k = 0;k <= rollMax[t];k++){
+                        dp[i][j][1] = (dp[i][j][1]+dp[i-1][t][k])%M;
                     }
                 }
-            }++ans;
-        }return -1;
+            }
+        }
+        for (int i = 0;i < 6;i++){
+            for (int j = 1;j <= rollMax[i];j++){
+                ans = (ans + dp[n][i][j])%M;
+            }
+        }
+        return ans;
     }
 }
