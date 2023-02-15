@@ -3,39 +3,41 @@ import java.util.*;
 import javax.management.Query;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.security.GeneralSecurityException;
 
 public class Main {
     static String ss, io[];
-    static int test, N = 200010, M = 1000000007;
-    static int n, c;
-    static long a[] = new long[N], cost[][] = new long[N][2];
+    static int test, N = 2010, M = 1000000007;
+    static int n, m, c[] = new int[N], dis[][] = new int[N][N];
+    static List<Integer>[] g = new List[N];
     static void solve() throws Exception{
-        n = ni(); c = ni();
-        Arrays.fill(a, 0);
-        for (int i = 1;i <= n;i++) cost[i] = new long[]{0, 0};
-        for (int i = 1;i <= n;i++) a[i] = ni();
+        n = ni(); m = ni();
         for (int i = 1;i <= n;i++){
-            cost[i][0] = min(i+a[i], n-i+1+a[i]);
-            cost[i][1] = i;
+            g[i] = new ArrayList<>();
+            for (int j = 1;j <= n;j++) dis[i][j] = -1;
         }
-        Arrays.sort(cost, 1, n+1, (x,y)->Long.compare(x[0], y[0]));
-        for (int i = 1;i <= n;i++) cost[i][0] += cost[i-1][0];
-        int ans = 0;
-        for (int i = 1;i <= n;i++){
-            int l = 1, r = n, dx = i;
-            long first = cost[i][1]+a[(int)cost[i][1]];
-            if (first > c) continue;
-            while (l <= r){
-                int m = l+r >> 1;
-                long cur = cost[m][0];
-                if (m < dx) cur += first;
-                else cur += first-cost[dx][0]+cost[dx-1][0];
-                if (cur <= c) l = m+1;
-                else r = m-1;
+        for (int i = 1;i <= n;i++) c[i] = ni();
+        for (int i = 1;i <= m;i++){
+            int u = ni(), v = ni();
+            g[u].add(v);
+            g[v].add(u);
+        }
+        Deque<int[]> d = new LinkedList<>();
+        d.offerLast(new int[]{1, n});
+        dis[1][n] = 0;
+        while (!d.isEmpty()){
+            int[] cur = d.pollFirst();
+            int x = cur[0], y = cur[1];
+            for (int nx : g[x]){
+                for (int ny : g[y]){
+                    if (c[nx] != c[ny] && dis[nx][ny] == -1){
+                        dis[nx][ny] = dis[x][y]+1;
+                        d.offerLast(new int[]{nx, ny});
+                    }
+                }
             }
-            ans = max(ans, r<dx?r+1:r);
-        }out.println(ans);
+        }out.println(dis[n][1]);
     }
     public static void main(String[] args) throws Exception {
         // test = 1;

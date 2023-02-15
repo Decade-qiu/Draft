@@ -1,49 +1,111 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <%- include('./_blocks/head', { siteTitle: `${tag.name} | ${themeConfig.siteName}` }) %>
-    <meta name="description" content="<%= themeConfig.siteDescription %>">
-  </head>
-  <body>
-    <div id="app" class="main">
-
-      <%- include('./_blocks/sidebar') %>
-
-      <div class="main-container">
-        <div class="content-container" data-aos="fade-up">
-          <h2 class="current-tag">标签: <%= tag.name %></h2>
-          <% posts.forEach(function(post) { %>
-            <article class="post-item">
-              <div class="left">
-                <a href="<%= post.link %>">
-                  <h2 class="post-title"><%= post.title %></h2>
-                </a>
-                <!-- <div class="post-date">
-                  <%= post.dateFormat %>
-                </div>
-                <div class="post-abstract">
-                  <%- post.abstract %>
-                </div> -->
-              </div>
-              <div class="right">
-                <div class="post-abstract">
-                  <%- post.abstract %>
-                </div> -->
-              </div>
-              <!-- <% if (themeConfig.showFeatureImage && post.feature) { %>
-                <a class="right" href="<%= post.link %>">
-                  <div class="feature-container" style="background-image: url('<%= post.feature %>')">
-                  </div>
-                </a>
-              <% } %> -->
-            </article>
-          <% }); %>
-
-          <%- include('./_blocks/pagination') %>
-        </div>
+<script>
+  function secondToDate(second) {
+    if (!second) {
+      return 0;
+    }
+    var time = new Array(0, 0, 0, 0, 0);
+    if (second >= 365 * 24 * 3600) {
+      time[0] = parseInt(second / (365 * 24 * 3600));
+      second %= 365 * 24 * 3600;
+    }
+    if (second >= 24 * 3600) {
+      time[1] = parseInt(second / (24 * 3600));
+      second %= 24 * 3600;
+    }
+    if (second >= 3600) {
+      time[2] = parseInt(second / 3600);
+      second %= 3600;
+    }
+    if (second >= 60) {
+      time[3] = parseInt(second / 60);
+      second %= 60;
+    }
+    if (second > 0) {
+      time[4] = second;
+    }
+    return time;
+  }</script>
+<script type="text/javascript" language="javascript">
+  function setTime() {
+    var create_time = Math.round(new Date(Date.UTC(2022, 11, 01, 17, 17, 20)).getTime() / 1000);
+    var timestamp = Math.round((new Date().getTime() + 8 * 60 * 60 * 1000) / 1000);
+    currentTime = secondToDate((timestamp - create_time));
+    currentTimeHtml = currentTime[1] + ' days '
+      + currentTime[2] + ' hours ' + currentTime[3] + ' minutes ' + currentTime[4] + ' second';
+    document.getElementById("htmer_time").innerHTML = currentTimeHtml;
+  } setInterval(setTime, 1000);</script>
+<div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="<%= themeConfig.domain %>">
+        <img src="<%= themeConfig.domain %>/images/avatar.png?v=<%= site.utils.now %>" class="site-logo">
+        <h1 class="site-title">
+          <%= themeConfig.siteName %>
+        </h1>
+      </a>
+      <!-- <div style="text-align: center">
+        <form id="gridea-search-form" style="position: relative" data-update="<%=site.utils.now%>" action="/search/">
+          <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+          <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+        </form> 
+      </div> -->
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
       </div>
     </div>
-
-    <%- include('./_blocks/scripts') %>
-  </body>
-</html>
+    <div>
+      <% menus.forEach(function(menu) { %>
+        <% if (menu.openType==='External' ) { %>
+          <a href="<%= menu.link %>" class="site-nav" target="_blank">
+            <%= menu.name %>
+          </a>
+          <% } else { %>
+            <a href="<%= menu.link %>" class="site-nav">
+              <%= menu.name %>
+            </a>
+            <% } %>
+              <% }); %>
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      <% ['github', 'twitter' , 'zhihu' ].forEach((item)=> { %>
+        <% if (site.customConfig[item]) { %>
+          <a class="social-link" href="<%= site.customConfig[item] %>" target="_blank">
+            <i class="fab fa-<%= item %>"></i>
+          </a>
+          <% } %>
+            <% }) %>
+              <% ['linkedin'].forEach((item)=> { %>
+                <% if (site.customConfig[item]) { %>
+                  <a class="social-link" href="<%= site.customConfig[item] %>" target="_blank">
+                    <i class="fas fa-code"></i>
+                  </a>
+                  <% } %>
+                    <% }) %>
+                      <% ['facebook'].forEach((item)=> { %>
+                        <% if (site.customConfig[item]) { %>
+                          <a class="social-link" href="<%= site.customConfig[item] %>" target="_blank">
+                            <i class="fas fa-music"></i>
+                          </a>
+                          <% } %>
+                            <% }) %>
+                              <% ['weibo'].forEach((item)=> { %>
+                                <% if (site.customConfig[item]) { %>
+                                  <a class="social-link" href="<%= site.customConfig[item] %>" target="_blank">
+                                    <i class="fab fa-youtube"></i>
+                                  </a>
+                                  <% } %>
+                                    <% }) %>
+    </div>
+    <div class="site-description">
+      <%- themeConfig.siteDescription %>
+    </div>
+    <div class="site-footer">
+      <%- themeConfig.footerInfo %>
+        Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+        <div class="line"></div>
+        Have Ran <span id="htmer_time" style="color: white;"></span>
+    </div>
+  </div>
+</div>

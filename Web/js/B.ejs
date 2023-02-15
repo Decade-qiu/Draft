@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <%- include('./_blocks/head', { siteTitle: themeConfig.siteName }) %>
+        <meta name="description" content="<%= themeConfig.siteDescription %>">
+        <script src="<%= themeConfig.domain %>/media/gridea-search/gridea-search.js"></script>
+        <script src="<%= themeConfig.domain %>/media/gridea-search/result-template.ejs" type="text/ejs"></script>
+        <style>
+            .searched-keyword {
+                background-color: yellow;
+                color: red;
+            }
+        </style>
+</head>
+
+<body>
+    <div id="app" class="main">
+
+        <%- include('./_blocks/sidebar') %>
+
+            <div class="main-container">
+                <div class="content-container" data-aos="fade-up">
+                    <div id="gridea-search-result" data-update="<%= site.utils.now %>">
+                        <div class="searching" style="font-size: 18px; margin-top: 50px;">
+                            <i class="fa fa-sync-alt fa-spin"></i>&nbsp;&nbsp;搜索中......
+                            <br><br>
+                            <span style="font-size: 65%; color: #aaa">第一次搜索可能需要耗费较长时间构建索引，请耐心等待...</span>
+                        </div>
+                        <div class="no-result" style="display:none; font-size: 20px; margin-top: 50px;">
+                            <i class="fa fa-exclamation-triangle"></i>&nbsp;&nbsp;未搜索到相关文章，请更换关键词
+                        </div>
+                    </div>
+
+                    <div class="pagination-container">
+                        <% if (pagination.prev) { %>
+                          <a href="<%= pagination.prev %>" class="prev"><i class="icon-arrow-ios-back-outline"></i> 上一页</a>
+                        <% } %>
+                        <% if (pagination.next) { %>
+                          <a href="<%= pagination.next %>" class="next">下一页 <i class="icon-arrow-ios-forward-outline"></i></a>
+                        <% } %>
+                      </div>
+                </div>
+            </div>
+    </div>
+
+    <%- include('./_blocks/scripts') %>
+</body>
+
+</html>

@@ -1,28 +1,24 @@
 
-
-def qpow(x, y, M):
-    res = 1
-    while y:
-        if y%2 == 1: res = res*x%M
-        x = x*x%M
-        y >>= 1
-    return res
-
-def solve(): 
-    n, p = list(map(int, input().split()))
-    a = list(map(int, input().split()))
+def solve():
+    n, m = list(map(int, input().split()))
+    a, b, c = [], [], []
+    for i in range(n):
+        t, x, y = list(map(int, input().split()))
+        if x and y: c.append(t)
+        elif x: a.append(t)
+        elif y: b.append(t)
     a.sort()
-    for i in range(1, n): a[i] += a[i-1]
-    l, r, M = 0 , n-1, 1000000007
-    while l <= r:
-        m = l+r >> 1
-        if a[m] <= a[n-1]-a[m]: l = m+1
-        else: r = m-1
-    ans = (qpow(p, a[n-1]-a[m], M)-qpow(p, a[m], M)+M)%M
-    # if m < n-1 : ans = min(ans, (qpow(p, a[n-1]-a[m+1], M)-qpow(p, a[m+1], M)+M)%M)
+    b.sort()
+    for i in range(min(len(a), len(b))): c.append(a[i]+b[i])
+    if len(c) < m:
+        print(-1)
+        return
+    ans = 0
+    c.sort()
+    for i in range(m): ans += c[i]
     print(ans)
 
-test = int(input())
+test = 1 #int(input())
 while test:
     solve()
     test -= 1
