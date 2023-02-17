@@ -1,47 +1,16 @@
-import java.util.*;
-
-import javax.management.Query;
-
-import java.io.*;
-import java.lang.reflect.Array;
-import java.security.GeneralSecurityException;
+import java.util.*;import java.io.*;
 
 public class Main {
     static String ss, io[];
-    static int test, N = 2010, M = 1000000007;
-    static int n, m, c[] = new int[N], dis[][] = new int[N][N];
-    static List<Integer>[] g = new List[N];
+    static int test, N = 200010, M = 1000000007;
+    static int n, m, a[] = new int[N];
     static void solve() throws Exception{
         n = ni(); m = ni();
-        for (int i = 1;i <= n;i++){
-            g[i] = new ArrayList<>();
-            for (int j = 1;j <= n;j++) dis[i][j] = -1;
-        }
-        for (int i = 1;i <= n;i++) c[i] = ni();
-        for (int i = 1;i <= m;i++){
-            int u = ni(), v = ni();
-            g[u].add(v);
-            g[v].add(u);
-        }
-        Deque<int[]> d = new LinkedList<>();
-        d.offerLast(new int[]{1, n});
-        dis[1][n] = 0;
-        while (!d.isEmpty()){
-            int[] cur = d.pollFirst();
-            int x = cur[0], y = cur[1];
-            for (int nx : g[x]){
-                for (int ny : g[y]){
-                    if (c[nx] != c[ny] && dis[nx][ny] == -1){
-                        dis[nx][ny] = dis[x][y]+1;
-                        d.offerLast(new int[]{nx, ny});
-                    }
-                }
-            }
-        }out.println(dis[n][1]);
+        
     }
     public static void main(String[] args) throws Exception {
-        // test = 1;
-        test = ni(in.readLine());
+        test = 1;
+        // test = ni(in.readLine());
         while (test-- > 0){
             solve();
         }out.flush();
