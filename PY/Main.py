@@ -1,14 +1,9 @@
 
 def solve():
-    input()
     n, m = list(map(int, input().split()))
-    g = [list(map(int, input().split())) for i in range(n)]
-    l, r = 1, int(1e9)
-    while l <= r:
-        mid = l+r >> 1
-        if ck(g, mid, n, m): l = mid+1
-        else: r = mid-1
-    print(r)
+    for i in range(m):
+        n += 2
+    print(n)
 
 def ck(g, t, n, m):
     cnt = [0]*n

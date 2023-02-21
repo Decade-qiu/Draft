@@ -25,21 +25,13 @@ public class LeetCode {
         return res;
     }
     public static void main(String[] args) {
-        String[] x = {"[3,4,4,5]"};
-        System.out.println(new Solution().squareFreeSubsets(
-                int1d(x[0])
+        String[] x = {"[1,0,1]", "[0,0,0]", "[[1,1,1],[2,1,0],[3,0,0]]"};
+        System.out.println(new Solution().handleQuery(
+                int1d(x[0]), int1d(x[1]), int2d(x[2])
         ));
-        System.out.println(Integer.toBinaryString(3));
-        System.out.println((3L >> 32 & 1));
     }
 }
 
 class Solution {
-    public int squareFreeSubsets(int[] nums) {
-        int[] cnt = new int[31];
-        for (int i : nums) cnt[i]++;
-        for (int i = 1;i < (1<<(31));i++){
-            
-        }
-    }
+    
 }
