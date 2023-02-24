@@ -6,7 +6,8 @@ public class Main {
     static int n, m, a[] = new int[N];
     static void solve() throws Exception{
         n = ni(); m = ni();
-        
+
+
     }
     public static void main(String[] args) throws Exception {
         test = 1;

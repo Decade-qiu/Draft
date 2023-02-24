@@ -25,36 +25,57 @@ public class LeetCode {
         return res;
     }
     public static void main(String[] args) {
-        String[] x = {"[1,0,1]", "[0,0,0]", "[[18,19],[3,12],[17,19],[2,13],[7,10]]"};
-        System.out.println(new Solution().mostBooked(
-                4, int2d(x[2])
+        String[] x = {"[[1,2],[3,2]]", "[[2,1],[3,2]]", "[[18,19],[3,12],[17,19],[2,13],[7,10]]"};
+        System.out.println(new Solution().buildMatrix(
+                3, int2d(x[0]), int2d(x[1])
         ));
     }
 }
 
 class Solution {
-    public int mostBooked(int n, int[][] meetings) {
-        PriorityQueue<int[]> pq = new PriorityQueue<>(
-            (x, y)->x[0]==y[0] ? x[1]-y[1] : x[0]-y[0]
-        );
-        Arrays.sort(meetings, (x, y)->x[0]==y[0] ? x[1]-y[1] : x[0]-y[0]);
-        int[] cnt = new int[n];
-        for (int i = 0;i < n;i++) pq.add(new int[]{-1, i});
-        for (int[] c : meetings){
-            List<int[]> tp = new ArrayList<>();
-            while (!pq.isEmpty() && pq.peek()[0] <= c[0]){
-                tp.add(pq.poll());
+    int f = 0;
+    int[] get(int[] deg, List<Integer>[] g, int k){
+        int t = 0, ans[] = new int[k+1];
+        Deque<Integer> d = new LinkedList<>();
+        for (int i = 1;i <= k;i++) if (deg[i]==0) d.offerLast(i);
+        while (!d.isEmpty()){
+            int u = d.pollFirst();
+            ans[u] = t++;
+            for (int v : g[u]){
+                if (--deg[v] == 0) d.offerLast(v);
             }
-            tp.sort((x, y)->x[1]-y[1]);
-            for (int i = 1;i < tp.size();i++) pq.add(tp.get(i));
-            int[] f = tp.get(0);
-            cnt[f[1]]++;
-            int st = Math.max(f[0], c[0]), last = c[1]-c[0];
-            pq.add(new int[]{st+last, f[1]});
         }
         int max = 0;
-        for (int i : cnt) max = Math.max(i, max);
-        for (int i = 0;i < n;i++) if (cnt[i]==max) return i;
-        return 0;
+        for (int i = 0;i <= k;i++) max = Math.max(max, deg[i]);
+        if (max != 0) f = 1;
+        return ans;
+    }
+    public int[][] buildMatrix(int k, int[][] row, int[][] col) {
+        int[][] ans = new int[k][k];
+        int[] degr = new int[k+1], degc = new int[k+1];
+        List<Integer>[] gr = new List[k+1], gc = new List[k+1];
+        for (int i = 0;i <= k;i++){
+            gr[i] = new ArrayList<>();
+            gc[i] = new ArrayList<>();
+        }
+        for (int[] t : row){
+            degr[t[1]]++;
+            gr[t[0]].add(t[1]);
+        }
+        for (int[] t : col){
+            degc[t[1]]++;
+            gc[t[0]].add(t[1]);
+        }
+        int[] r = get(degr, gr, k), c = get(degc, gc, k);
+        if (f == 1) return new int[0][0];
+        for (int i = 1;i <= k;i++){
+            ans[r[i]][c[i]] = i;
+        }
+        for (int i = 0;i < k;i++){
+            for (int j = 0;j < k;j++){
+                System.out.print(ans[i][j]+" ");
+            }System.out.println();
+        }
+        return ans;
     }
 }
