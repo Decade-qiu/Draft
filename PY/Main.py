@@ -1,17 +1,28 @@
+from collections import defaultdict
+
 
 def solve():
-    n, d, k = list(map(int, input().split()))
-    g = gcd(n, d)
-    loop = n//g
-    k -= 1
-    ans = (k//loop+(k%loop)*d)%n
-    print(int(ans))
+    n = int(input())
+    g = [input().split() for i in range(n)]
+    g.sort()                                            
+    ans = x = y = ""
+    for i in range(n-1):
+        if g[i][0:-1] == g[i+1][0:-1]:
+            ans = " ".join(g[i][0:-1])
+            x = " "+g[i][-1]+" "+g[i+1][-1]
+            y = " "+g[i+1][-1]+" "+g[i][-1]
+    for i in range(n):
+        if x == " "+g[i][-2]+" "+g[i][-1]:
+            ans += x
+            break
+        if y == " "+g[i][-2]+" "+g[i][-1]:
+            ans += y
+            break
+    print(ans)
 
-def gcd(a, b):
-    if a == 0: return b
-    return gcd(b%a, a)
 
-# test = 1
+
+test = 1
 test = int(input())
 while test:
     solve()

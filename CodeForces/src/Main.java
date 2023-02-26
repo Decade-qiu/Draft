@@ -3,15 +3,36 @@ import java.util.*;import java.io.*;
 public class Main {
     static String ss, io[];
     static int test, N = 200010, M = 1000000007;
-    static int n, m, a[] = new int[N];
+    static int n;
     static void solve() throws Exception{
-        n = ni(); m = ni();
-
-
-    }
+        n = ni();
+        HashMap<Integer, Integer> mp = new HashMap<>();
+        for (int i = 0;i < n;i++) {
+            int c = ni();
+            mp.put(c, mp.getOrDefault(c, 0)+1);
+        }
+        int m = mp.size(), dx = 0;
+        int[][] a = new int[m][2];
+        for (int k : mp.keySet()){
+            a[dx][0] = k;
+            a[dx++][1] = mp.get(k);
+        }
+        Arrays.sort(a, (x, y)->x[0]-y[0]);
+        for (int[] tp : a) System.out.println(tp[0]+" "+tp[1]);
+        int ans = 0;
+        for (int i = 1;i < m;i++){
+            int c = a[i][0], p = a[i-1][0];
+            if (c != p+1){
+                ans += a[i-1][1];
+            }else{
+                ans += max(a[i-1][1]-a[i][1], 0);
+            }
+        }
+        out.println(ans+a[m-1][1]);
+    }// 这样BFS每走一步时间不一定只增加1，所以需要用优先队列来获得当前最短的时间
     public static void main(String[] args) throws Exception {
         test = 1;
-        // test = ni(in.readLine());
+        test = ni(in.readLine());
         while (test-- > 0){
             solve();
         }out.flush();
