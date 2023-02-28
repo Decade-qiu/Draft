@@ -2,37 +2,32 @@ import java.util.*;import java.io.*;
 
 public class Main {
     static String ss, io[];
-    static int test, N = 200010, M = 1000000007;
-    static int n;
+    static int test, N = 2010, M = 1000000007;
+    static int n, m, fa[] = new int[N], rk[] = new int[N];
+    static int find(int t){
+        if (t == fa[t]) return t;
+        return fa[t] = find(fa[t]);
+    }
     static void solve() throws Exception{
-        n = ni();
-        HashMap<Integer, Integer> mp = new HashMap<>();
-        for (int i = 0;i < n;i++) {
-            int c = ni();
-            mp.put(c, mp.getOrDefault(c, 0)+1);
+        n = ni(); m = ni();
+        for (int i = 1;i <= n;i++){
+            fa[i] = i;
+            rk[i] = 1;
         }
-        int m = mp.size(), dx = 0;
-        int[][] a = new int[m][2];
-        for (int k : mp.keySet()){
-            a[dx][0] = k;
-            a[dx++][1] = mp.get(k);
-        }
-        Arrays.sort(a, (x, y)->x[0]-y[0]);
-        for (int[] tp : a) System.out.println(tp[0]+" "+tp[1]);
-        int ans = 0;
-        for (int i = 1;i < m;i++){
-            int c = a[i][0], p = a[i-1][0];
-            if (c != p+1){
-                ans += a[i-1][1];
-            }else{
-                ans += max(a[i-1][1]-a[i][1], 0);
+        int res = 0;
+        for (int i = 1;i <= m;i++){
+            int u = find(ni()), v = find(ni());
+            if (u != v){
+                rk[u] += rk[v];
+                fa[v] = u;
             }
+            res = Math.max(res, rk[u]-1);
+            out.println(res);
         }
-        out.println(ans+a[m-1][1]);
-    }// 这样BFS每走一步时间不一定只增加1，所以需要用优先队列来获得当前最短的时间
+    }
     public static void main(String[] args) throws Exception {
         test = 1;
-        test = ni(in.readLine());
+        // test = ni(in.readLine());
         while (test-- > 0){
             solve();
         }out.flush();

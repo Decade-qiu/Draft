@@ -1,20 +1,57 @@
-import sys
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtWebEngineWidgets import *
+import random
+import tornado.ioloop
+import tornado.web
 
-class Mainwindow(QMainWindow):
-    def _init_(self):
-        super(MainWindow,self).init()
-        self.setwindowTitle('加载外部网顶的例子')
-        self.setGeometry(5,30,1355,730)
-        self.browser=QWebEngineview()
-        #加载外部的web界面
-        self.browser.load(QUrl('http://html5test.com'))
-        self.setCentralwidget (self.browser)
-if __name__=='__main__':
-    app=QApplication(sys.argv)
-    win=Mainwindow()
-    win.show()
-    app.exit(app.exec_())
+# 参与人员名单
+participants = []
+
+# 中奖者列表
+first_prize_winners = []
+second_prize_winners = []
+third_prize_winners = []
+
+class MainHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("index.html",
+            first_prize=len(first_prize_winners),
+            second_prize=len(second_prize_winners),
+            third_prize=len(third_prize_winners),
+            participants="\n".join(participants),
+            first_prize_winners="\n".join(first_prize_winners),
+            second_prize_winners="\n".join(second_prize_winners),
+            third_prize_winners="\n".join(third_prize_winners))
+
+class DrawHandler(tornado.web.RequestHandler):
+    def post(self):
+        global participants, first_prize_winners, second_prize_winners, third_prize_winners
+
+        # 获取奖项和中奖人数
+        first_prize = int(self.get_argument("first_prize"))
+        second_prize = int(self.get_argument("second_prize"))
+        third_prize = int(self.get_argument("third_prize"))
+
+        # 获取参与人员名单
+        participants = self.get_argument("participants").strip().split("\n")
+
+        # 抽取中奖者
+        random.shuffle(participants)
+        first_prize_winners = participants[:first_prize]
+        participants = participants[first_prize:]
+        random.shuffle(participants)
+        second_prize_winners = participants[:second_prize]
+        participants = participants[second_prize:]
+        random.shuffle(participants)
+        third_prize_winners = participants[:third_prize]
+
+        self.redirect("/")
+
+def make_app():
+    return tornado.web.Application([
+        (r"/", MainHandler),
+        (r"/draw", DrawHandler),
+    ], static_path="static", debug=True)
+
+if __name__ == "__main__":
+    app = make_app()
+    app.listen(8888)
+    tornado.ioloop.IOLoop.current().start()

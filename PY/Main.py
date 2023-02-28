@@ -3,27 +3,26 @@ from collections import defaultdict
 
 def solve():
     n = int(input())
-    g = [input().split() for i in range(n)]
-    g.sort()                                            
-    ans = x = y = ""
-    for i in range(n-1):
-        if g[i][0:-1] == g[i+1][0:-1]:
-            ans = " ".join(g[i][0:-1])
-            x = " "+g[i][-1]+" "+g[i+1][-1]
-            y = " "+g[i+1][-1]+" "+g[i][-1]
-    for i in range(n):
-        if x == " "+g[i][-2]+" "+g[i][-1]:
-            ans += x
-            break
-        if y == " "+g[i][-2]+" "+g[i][-1]:
-            ans += y
-            break
-    print(ans)
-
-
+    st = input().split()
+    num = ["s"]*len(st)
+    dx = 0
+    for x in range(len(num)-1, -1, -1):
+        i = num[x]
+        if i=="pair":
+            if dx <= 1:
+                print("Error occurred")
+                return
+            x, y = num[dx-1], num[dx-2]
+            num[dx-2] = "pair<"+x+","+y+">"
+            dx -= 1
+        else:
+            num[dx] = i
+            dx += 1
+    if dx==1: print(num[0])
+    else: print("Error occurred")
 
 test = 1
-test = int(input())
+# test = int(input())
 while test:
     solve()
     test -= 1
