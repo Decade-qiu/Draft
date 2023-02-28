@@ -10,20 +10,7 @@ public class Main {
     }
     static void solve() throws Exception{
         n = ni(); m = ni();
-        for (int i = 1;i <= n;i++){
-            fa[i] = i;
-            rk[i] = 1;
-        }
-        int res = 0;
-        for (int i = 1;i <= m;i++){
-            int u = find(ni()), v = find(ni());
-            if (u != v){
-                rk[u] += rk[v];
-                fa[v] = u;
-            }
-            res = Math.max(res, rk[u]-1);
-            out.println(res);
-        }
+        System.out.println(n+" "+m);
     }
     public static void main(String[] args) throws Exception {
         test = 1;
