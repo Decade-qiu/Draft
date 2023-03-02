@@ -1,16 +1,33 @@
-import java.util.*;import java.io.*;
+import java.util.*;
+import java.io.*;
 
 public class Main {
     static String ss, io[];
-    static int test, N = 2010, M = 1000000007;
-    static int n, m, fa[] = new int[N], rk[] = new int[N];
-    static int find(int t){
-        if (t == fa[t]) return t;
-        return fa[t] = find(fa[t]);
-    }
+    static int test, N = 200010, M = 1000000007;
+    static int n, m;
     static void solve() throws Exception{
-        n = ni(); m = ni();
-        System.out.println(n+" "+m);
+        long t = nl();
+        int cnt[][] = new int[(int)1e6][2], len = 0;
+        for (int i = 2;(long)i*i <= t;i++){
+            if (t % i == 0){
+                cnt[len][0] = i;
+                while (t % i == 0){
+                    cnt[len][1]++;
+                    t /= i;
+                }len++;
+            }
+        }
+        if (t != 1){
+            cnt[len][0] = (int)t;
+            cnt[len][1] = 1;
+            len++;
+        }
+        long ans = 1;
+        for (int i = 0;i < len;i++){
+            System.out.println(cnt[i][0]+" "+cnt[i][1]);
+            if (cnt[i][1]%2 == 1) ans *= cnt[i][0];
+        }
+        out.println(ans);
     }
     public static void main(String[] args) throws Exception {
         test = 1;
