@@ -4,30 +4,39 @@ import java.io.*;
 public class Main {
     static String ss, io[];
     static int test, N = 200010, M = 1000000007;
-    static int n, m;
+    static int n, a[] = new int[N];
+    static tr root = new tr();
+    static void insert(int t){
+        tr cur = root;
+        for (int i = 2;i >= 0;i--){
+            int x = (t>>i)&1;
+            if (cur.cnt[x] == null) cur.cnt[x] = new tr();
+            cur = cur.cnt[x];
+        }
+    }
+    static int dfs(tr cur, int t){
+        if (t == 0) return 0;
+        tr one = cur.cnt[1], zero = cur.cnt[0];
+        if (one != null && zero != null){
+            return (1<<t)+min(
+                dfs(cur.cnt[0], t-1),
+                dfs(cur.cnt[1], t-1)
+            );
+        }else if (one != null){
+            return dfs(cur.cnt[1], t-1);
+        }else{
+            return dfs(cur.cnt[0], t-1);
+        }
+    }
     static void solve() throws Exception{
-        long t = nl();
-        int cnt[][] = new int[(int)1e6][2], len = 0;
-        for (int i = 2;(long)i*i <= t;i++){
-            if (t % i == 0){
-                cnt[len][0] = i;
-                while (t % i == 0){
-                    cnt[len][1]++;
-                    t /= i;
-                }len++;
-            }
-        }
-        if (t != 1){
-            cnt[len][0] = (int)t;
-            cnt[len][1] = 1;
-            len++;
-        }
-        long ans = 1;
-        for (int i = 0;i < len;i++){
-            System.out.println(cnt[i][0]+" "+cnt[i][1]);
-            if (cnt[i][1]%2 == 1) ans *= cnt[i][0];
-        }
-        out.println(ans);
+        n = ni(); 
+        for (int i = 1;i <= n;i++){
+            int x = ni();
+            insert(x);
+        }out.println(dfs(root, 2));
+    }
+    static class tr{
+        tr[] cnt = new tr[2];
     }
     public static void main(String[] args) throws Exception {
         test = 1;

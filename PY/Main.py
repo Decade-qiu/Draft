@@ -1,13 +1,11 @@
 from collections import defaultdict
-
+from math import *
 
 def solve():
-    a = [input() for i in range(5)]
-    ans = 0
-    for i in a:
-        if i[0]==i[2] and i[1]+1==i[3]: ans += 1
-    print(ans)
-    
+    print(pow(10, 18))
+    x = 999999999999999999
+    print(x, pow(2, 63)-1)
+
 
 test = 1
 # test = int(input())
