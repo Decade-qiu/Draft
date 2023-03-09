@@ -28,6 +28,11 @@ public class LeetCode {
         String[] x = {"[4,7,15,8,3,5]", "[[2,1],[3,2]]", "[[18,19],[3,12],[17,19],[2,13],[7,10]]"};
         System.out.println(new Solution().findValidSplit(int1d(x[0]))
         );
+        HashMap<String, String> mp = new HashMap<>();
+        mp.put("1", "\\sdfs");
+        String xx = "esc\\aped";
+        mp.put(xx, "\"hello\"");
+        System.out.println(mp.get(""));
     }
 }
 

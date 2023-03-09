@@ -4,46 +4,43 @@ import java.io.*;
 public class Main {
     static String ss, io[];
     static int test, N = 200010, M = 1000000007;
-    static int n, a[] = new int[N];
-    static tr root = new tr();
-    static void insert(int t){
-        tr cur = root;
-        for (int i = 2;i >= 0;i--){
-            int x = (t>>i)&1;
-            if (cur.cnt[x] == null) cur.cnt[x] = new tr();
-            cur = cur.cnt[x];
-        }
-    }
-    static int dfs(tr cur, int t){
-        if (t == 0) return 0;
-        tr one = cur.cnt[1], zero = cur.cnt[0];
-        if (one != null && zero != null){
-            return (1<<t)+min(
-                dfs(cur.cnt[0], t-1),
-                dfs(cur.cnt[1], t-1)
-            );
-        }else if (one != null){
-            return dfs(cur.cnt[1], t-1);
-        }else{
-            return dfs(cur.cnt[0], t-1);
-        }
-    }
+    static int n, m;
     static void solve() throws Exception{
-        n = ni(); 
-        for (int i = 1;i <= n;i++){
-            int x = ni();
-            insert(x);
-        }out.println(dfs(root, 2));
+        n = sc.nextInt(); sc.nextLine();
+        String s = sc.nextLine();
+        long ans = 0, pa[] = new long[N*10], pb[] = new long[N*10];
+        for (int i = 0;i < s.length();i++){
+            pa[i+1] = pa[i];
+            pb[i+1] = pb[i];
+            if (i+5<=s.length() && s.substring(i, i+5).equals("Alice")){
+                int cur = -1;
+                if ((i==0||!Character.isLetter(s.charAt(i-1))) &&
+                (i+5>=s.length()||!Character.isLetter(s.charAt(i+5)))) cur = i+5;
+                if (cur != -1){
+                    ans += pb[i]-pb[Math.max(0, i-n)];
+                    pa[i+1]++;
+                }
+            }
+            if (i+3<=s.length() && s.substring(i, i+3).equals("Bob")){
+                int cur = -1;
+                if ((i==0||!Character.isLetter(s.charAt(i-1))) &&
+                (i+3>=s.length()||!Character.isLetter(s.charAt(i+3)))) cur = i+3;
+                if (cur != -1){
+                    ans += pa[i]-pa[Math.max(0, i-n)];
+                    pb[i+1]++;
+                }
+            }
+        }System.out.println(ans);
     }
-    static class tr{
-        tr[] cnt = new tr[2];
-    }
-    public static void main(String[] args) throws Exception {
-        test = 1;
-        // test = ni(in.readLine());
-        while (test-- > 0){
-            solve();
-        }out.flush();
+    public static void main(String[] args) {
+        try {
+            test = 1;
+            // test = ni(in.readLine());
+            while (test-- > 0){
+                solve();
+            }out.flush();
+            sc.close();
+        } catch (Exception e) {System.out.println(e);}
     }
     static int ni() throws IOException{input.nextToken();return (int) input.nval;}
     static long nl() throws IOException{input.nextToken();return (long) input.nval;}
@@ -55,6 +52,7 @@ public class Main {
     static long min(long a, long b) {return a < b ? a : b;}
     static int lg2(long a) {return (int)Math.ceil((Math.log(a)/Math.log(2)));}
     static int abs(int a) {return a > 0?a:-a;}
+    static Scanner sc = new Scanner(System.in);
     static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
     static StreamTokenizer input = new StreamTokenizer(in);
     static PrintWriter out = new PrintWriter(new BufferedOutputStream(System.out));
