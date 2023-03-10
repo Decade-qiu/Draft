@@ -4,43 +4,60 @@ import java.io.*;
 public class Main {
     static String ss, io[];
     static int test, N = 200010, M = 1000000007;
-    static int n, m;
-    static void solve() throws Exception{
+    static int n, ans;
+    static int[] dx={1,0,0,-1}, dy={0,-1,1,0};
+    static int[][] g = new int[101][101], v = new int[101][101];
+    static void solve(){
         n = sc.nextInt(); sc.nextLine();
-        String s = sc.nextLine();
-        long ans = 0, pa[] = new long[N*10], pb[] = new long[N*10];
-        for (int i = 0;i < s.length();i++){
-            pa[i+1] = pa[i];
-            pb[i+1] = pb[i];
-            if (i+5<=s.length() && s.substring(i, i+5).equals("Alice")){
-                int cur = -1;
-                if ((i==0||!Character.isLetter(s.charAt(i-1))) &&
-                (i+5>=s.length()||!Character.isLetter(s.charAt(i+5)))) cur = i+5;
-                if (cur != -1){
-                    ans += pb[i]-pb[Math.max(0, i-n)];
-                    pa[i+1]++;
+        int stx = 0, sty = 0;
+        for(int i = 1;i <= n;i++){
+            String[] c = sc.nextLine().split(" ");
+            for (int j = 1;j <= n;j++){
+                v[i][j] = -1;
+                char cur = c[j-1].charAt(0);
+                if (cur == '+') g[i][j] = 1;
+                else if (cur == '-') g[i][j] = -1;
+                else if (cur == 'B') g[i][j] = 2;
+                else{
+                    g[i][j] = 3;
+                    stx = i; sty = j;
                 }
             }
-            if (i+3<=s.length() && s.substring(i, i+3).equals("Bob")){
-                int cur = -1;
-                if ((i==0||!Character.isLetter(s.charAt(i-1))) &&
-                (i+3>=s.length()||!Character.isLetter(s.charAt(i+3)))) cur = i+3;
-                if (cur != -1){
-                    ans += pa[i]-pa[Math.max(0, i-n)];
-                    pb[i+1]++;
+        }
+        Deque<int[]> d = new LinkedList<>();
+        d.offerLast(new int[]{stx, sty});
+        while (!d.isEmpty()){
+            int s = d.size();
+            while (s-- > 0){
+                int[] cur = d.pollFirst();
+                int x = cur[0], y = cur[1];
+                if (v[x][y] != -1) continue;
+                v[x][y] = 1;
+                for (int k = 0;k < 4;k++){
+                    int nx = x+dx[k], ny = y+dy[k];
+                    if (nx<1||ny<1||nx>n||ny>n||v[nx][ny]==1) continue;
+                    if (g[nx][ny] == 2){
+                        System.out.println(ans+1);
+                        return;
+                    }
+                    if (ans==0 || g[x][y]+g[nx][ny]==0) {
+                        d.offerLast(new int[]{nx, ny});
+                    }
                 }
             }
-        }System.out.println(ans);
+            ans++;
+        }
+        System.out.println(-1);
     }
-    public static void main(String[] args) {
-        try {
+    public static void main(String[] args) throws Exception{
+        // try {
             test = 1;
             // test = ni(in.readLine());
             while (test-- > 0){
                 solve();
             }out.flush();
             sc.close();
-        } catch (Exception e) {System.out.println(e);}
+        // } catch (Exception e) {e.getStackTrace();}
     }
     static int ni() throws IOException{input.nextToken();return (int) input.nval;}
     static long nl() throws IOException{input.nextToken();return (long) input.nval;}
