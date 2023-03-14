@@ -1,14 +1,20 @@
 import java.util.*;
+
 import java.io.*;
+import java.math.BigInteger;
 
 public class Main {
     static String ss, io[];
     static int test, N = 200010, M = 1000000007;
-    static int n, ans;
-    static int[] dx={1,0,0,-1}, dy={0,-1,1,0};
-    static int[][] g = new int[101][101], v = new int[101][101];
-    static void solve(){
-        
+    static int n, m;
+    static void solve() throws IOException{
+        io = sc.nextLine().split(" ");
+        String x = io[0], y = io[1];
+        BigInteger ans = new BigInteger(y).subtract(new BigInteger(x)).subtract(new BigInteger("1"));
+        BigInteger mi = new BigInteger("2");
+        mi = mi.pow(ni(x)).multiply(new BigInteger("2")).subtract(new BigInteger("1"));
+        ans = ans.divide(mi).add(new BigInteger("1"));
+        System.out.println(ans);
     }
     public static void main(String[] args) throws Exception{
         // try {

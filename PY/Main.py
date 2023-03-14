@@ -2,9 +2,10 @@ from collections import defaultdict
 from math import *
 
 def solve():
-    print(pow(10, 18))
-    x = 999999999999999999
-    print(x, pow(2, 63)-1)
+    n, s = list(map(int, input().split()))
+    s += pow(2, n+1)-2-n
+    s /= pow(2, n+1)-1
+    print(int(s))
 
 
 test = 1
